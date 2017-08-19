@@ -1,0 +1,18 @@
+# This script is in R
+# This script prints the numbers from 1 to 100. 
+# But for multiples of three print “Fizz” instead of the number and 
+# for the multiples of five print “Buzz”. 
+# For numbers which are multiples of both three and five print “FizzBuzz”.
+
+print("This script is in R")
+
+for(i in 1:100) {
+  if ( i%%3 == 0 && i%%5 == 0 )
+  	print("FizzBuzz")
+  else if ( i%%5 == 0 )
+  	print("Buzz")
+  else if ( i%%5 == 0 )
+  	print("Buzz")
+  else
+  	print(i)
+}
