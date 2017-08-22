@@ -1,3 +1,4 @@
+setwd("C:\\4_R\\ToxValue\\Prediction\\Prediction_Script")
 infile<-"model_input789321.txt"
 # args <- commandArgs(TRUE)	# this line will take the command line parameter into args.
 # infile <- args[1]			# this line will send args[1] to the infile
@@ -15,12 +16,13 @@ infile
 # load libraries
 # install.packages("randomForest")  # If the library is not installed
 # install.packages("rcdk")  		# If the library is not installed
+# install.packages("rJava")  		# If the library is not installed
 # .libPaths("C:/Users/wchiu/Documents/R/win-library/3.3") # For testing
 library("randomForest")
 library("rcdk") # Note this requres JAVA that is that same build (e.g., 64-bit) as R
 
 ## Set up -- only do this once
-setwd("C:\\4_R\\ToxValue\\Prediction\\Prediction_Script")
+
 load("ToxValRFModels.Rdata")
 tv.residuals <- read.csv("Prediction_Residuals.csv",row.names=1)
 row.names(tv.residuals) <- ToxValuesNames
