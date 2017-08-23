@@ -1,15 +1,13 @@
 setwd("C:\\4_R\\ToxValue\\Prediction\\Prediction_Script")
+args <- commandArgs(TRUE)	# this line will take the command line parameter into args.
+process_id <- args[1]			# this line will send args[1] to the infile
 
-# args <- commandArgs(TRUE)	# this line will take the command line parameter into args.
-# process_id <- args[1]			# this line will send args[1] to the infile
-
-process_id <- "pi_103570"
+# process_id <- "pi_103570"
 model_input <- paste("../Prediction_temp_files/", process_id,"_input.txt",sep="")
 
-# model_input file should only have 1 SMILES in it
+# input file should only have 1 SMILES in it
 # if there are more than one, only the first will be used
-newchem.smiles <- scan(model_input,what=character())[1]
-newchem.smiles
+newchem.smiles<- scan(model_input,what=character())[1]
 
 # load libraries
 # install.packages("randomForest")  # If the library is not installed
@@ -20,6 +18,7 @@ library("randomForest")
 library("rcdk") # Note this requres JAVA that is that same build (e.g., 64-bit) as R
 
 ## Set up -- only do this once
+
 load("ToxValRFModels.Rdata")
 tv.residuals <- read.csv("Prediction_Residuals.csv",row.names=1)
 row.names(tv.residuals) <- ToxValuesNames
@@ -28,6 +27,7 @@ dnames<-c(get.desc.names(dc[1]),get.desc.names(dc[2]),get.desc.names(dc[3]),get.
 dnames<-unique(dnames)
 
 ## Get descriptors from smiles - do this for each chemical
+
 mol <- parse.smiles(newchem.smiles)[[1]]
 mol.desc<-cbind(data.frame(smiles=newchem.smiles,stringsAsFactors = FALSE),eval.desc(mol,dnames))
 
@@ -63,7 +63,7 @@ for (tval in ToxValuesNames) {
   all.desc.scale <- as.data.frame(scale(all.desc,center=TRUE,scale=TRUE))
 
   ## Write ".x" file for new chemical
-  newchem_xfile<- paste("..\\Prediction_temp_files\\", infile,"_newchem.x",sep="")	# file name here
+  newchem_xfile<- paste("..\\Prediction_temp_files\\", process_id, "_intermediate", "_newchem.x",sep="")	# file name here
   x.new.scale <- all.desc.scale[1,]
   write.table(as.data.frame(t(dim(x.new.scale))),file=newchem_xfile,
               row.names=FALSE,col.names=FALSE,quote=FALSE,sep="\t")
@@ -96,19 +96,8 @@ outfile <- paste("..\\Prediction_temp_files\\", process_id,"_output.csv",sep="")
 write.csv(y.pred,file=outfile,row.names=FALSE)
 
 # remove intermediate files
-
 setwd("C:/4_R/ToxValue/Prediction/Prediction_temp_files/")
-intermediate_file_pattern = process_id. "_intermediate__.*..*..*"
-junk <- dir(path="./", pattern = intermediate_file_pattern) 
+intermediate_file_pattern <- paste(process_id, "_intermediate_.*..*..*",sep="")
+junk <- dir(path="./", pattern= intermediate_file_pattern) 
 file.remove(junk)
-
-
-
-
-list.dirs(path="", full.names = TRUE, recursive = TRUE)
-directory
-
-list.files(path="C:/4_R/ToxValue/Prediction/Prediction_temp_files", pattern = ".*..*", recursive = TRUE)
-
-
 

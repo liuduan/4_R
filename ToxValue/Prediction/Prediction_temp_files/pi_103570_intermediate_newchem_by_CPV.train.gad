@@ -1,5 +1,0 @@
-#command line: get_ad ../Prediction_temp_files/pi_103570_intermediate_CPV.train.x -4PRED=..\Prediction_temp_files\.\model_input1035_intermediate__newchem.x -Z=3 -OUT=../Prediction_temp_files/pi_103570_intermediate_newchem_by_CPV.train.gad
-#Started at Wed Aug 23 11:01:57 2017
-#AD cut-off=19.8178
-ID	SID	Dist	Z-score	WITHIN_AD
-0	c1ccccc1	22.784	 4.111	0
