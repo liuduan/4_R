@@ -1,19 +1,15 @@
 setwd("C:\\4_R\\ToxValue\\Prediction\\Prediction_Script")
-# infile<-"..\\Prediction_temp_files\\model_input103570.txt"
-infile<-".\\model_input103570.txt"
 
 # args <- commandArgs(TRUE)	# this line will take the command line parameter into args.
-# infile <- args[1]			# this line will send args[1] to the infile
+# process_id <- args[1]			# this line will send args[1] to the infile
 
-# infile should only have 1 SMILES in it
+process_id <- "pi_103570"
+model_input <- paste("../Prediction_temp_files/", process_id,"_input.txt",sep="")
+
+# model_input file should only have 1 SMILES in it
 # if there are more than one, only the first will be used
-newchem.smiles<- scan(infile,what=character())[1]
-
-# modify infile to remove intermediate files.
-infile <- substr(infile, 1, 17)
-infile <- paste(infile,"_intermediate_",sep="")
-infile
-
+newchem.smiles <- scan(model_input,what=character())[1]
+newchem.smiles
 
 # load libraries
 # install.packages("randomForest")  # If the library is not installed
@@ -24,7 +20,6 @@ library("randomForest")
 library("rcdk") # Note this requres JAVA that is that same build (e.g., 64-bit) as R
 
 ## Set up -- only do this once
-
 load("ToxValRFModels.Rdata")
 tv.residuals <- read.csv("Prediction_Residuals.csv",row.names=1)
 row.names(tv.residuals) <- ToxValuesNames
@@ -33,7 +28,6 @@ dnames<-c(get.desc.names(dc[1]),get.desc.names(dc[2]),get.desc.names(dc[3]),get.
 dnames<-unique(dnames)
 
 ## Get descriptors from smiles - do this for each chemical
-
 mol <- parse.smiles(newchem.smiles)[[1]]
 mol.desc<-cbind(data.frame(smiles=newchem.smiles,stringsAsFactors = FALSE),eval.desc(mol,dnames))
 
@@ -69,7 +63,7 @@ for (tval in ToxValuesNames) {
   all.desc.scale <- as.data.frame(scale(all.desc,center=TRUE,scale=TRUE))
 
   ## Write ".x" file for new chemical
-  newchem_xfile<-paste("..\\Prediction_temp_files\\", infile,"_newchem.x",sep="")	# file name here
+  newchem_xfile<- paste("..\\Prediction_temp_files\\", infile,"_newchem.x",sep="")	# file name here
   x.new.scale <- all.desc.scale[1,]
   write.table(as.data.frame(t(dim(x.new.scale))),file=newchem_xfile,
               row.names=FALSE,col.names=FALSE,quote=FALSE,sep="\t")
@@ -80,7 +74,8 @@ for (tval in ToxValuesNames) {
 
   ## Write ".x" file for tox values
   tv.desc.scale <- all.desc.scale[-1,]
-  tv_xfile<-paste("..\\Prediction_temp_files\\", infile,"_",tval,".x",sep="")
+
+  tv_xfile<-paste("../Prediction_temp_files/", process_id, "_intermediate_",tval,".x",sep="")
   write.table(as.data.frame(t(dim(tv.desc.scale))),file=tv_xfile,
               row.names=FALSE,col.names=FALSE,quote=FALSE,sep="\t")
   write.table(as.data.frame(t(names(tv.desc.scale))),file=tv_xfile,
@@ -90,25 +85,25 @@ for (tval in ToxValuesNames) {
 
 
   ## Calculate z-score
-  gad_outfile <- paste("..\\Prediction_temp_files\\", infile,"_newchem_by_",tval,".gad",sep="");
+  gad_outfile <- paste("../Prediction_temp_files/", process_id, "_intermediate", "_newchem_by_",tval,".gad",sep="");
   system(paste("get_ad.exe ",tv_xfile," -4PRED=",newchem_xfile," -Z=3 -OUT=",gad_outfile,sep="")); 
   report.dat<-read.table(gad_outfile,header=TRUE,skip=3);
   y.pred[tval,"appl.domain"]<-report.dat$Z.score
 }
 
 ##
-# modify infile to made different output files.
-infile <- substr(infile, 1, 17)
-outfile<-paste("..\\Prediction_temp_files\\", infile,"_output.csv",sep="")
+outfile <- paste("..\\Prediction_temp_files\\", process_id,"_output.csv",sep="")
 write.csv(y.pred,file=outfile,row.names=FALSE)
 
 # remove intermediate files
-infile <- paste(infile,"_intermediate_*.*",sep="")
-infile
 
 setwd("C:/4_R/ToxValue/Prediction/Prediction_temp_files/")
-junk <- dir(path="./", pattern="model_input789321_intermediate__.*..*..*") 
+intermediate_file_pattern = process_id. "_intermediate__.*..*..*"
+junk <- dir(path="./", pattern = intermediate_file_pattern) 
 file.remove(junk)
+
+
+
 
 list.dirs(path="", full.names = TRUE, recursive = TRUE)
 directory
