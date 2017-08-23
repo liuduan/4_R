@@ -1,0 +1,5 @@
+#command line: get_ad ..\Prediction_temp_files\..\Prediction_tem_intermediate__IUR.train.x -4PRED=..\Prediction_temp_files\..\Prediction_tem_intermediate__newchem.x -Z=3 -OUT=..\Prediction_temp_files\..\Prediction_tem_intermediate__newchem_by_IUR.train.gad
+#Started at Tue Aug 22 15:50:05 2017
+#AD cut-off=18.3158
+ID	SID	Dist	Z-score	WITHIN_AD
+0	c1ccccc1	24.661	 5.828	0

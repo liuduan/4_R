@@ -1,5 +1,7 @@
 setwd("C:\\4_R\\ToxValue\\Prediction\\Prediction_Script")
-infile<-"model_input789321.txt"
+# infile<-"..\\Prediction_temp_files\\model_input103570.txt"
+infile<-".\\model_input103570.txt"
+
 # args <- commandArgs(TRUE)	# this line will take the command line parameter into args.
 # infile <- args[1]			# this line will send args[1] to the infile
 
